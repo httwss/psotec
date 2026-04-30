@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Leaf } from "lucide-react";
 import { whatsappLink, SITE_CONFIG } from "@/config/site";
+import logo from "@/assets/psotec-logo.jpeg";
 
 export const Navbar = () => (
   <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
     <div className="container flex h-16 items-center justify-between px-4">
       <a href="#" className="flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl gradient-health">
-          <Leaf className="h-5 w-5 text-primary-foreground" />
-        </div>
+        <img src={logo} alt={`${SITE_CONFIG.brand} logo`} className="h-9 w-9 rounded-xl object-cover" />
         <span className="text-xl font-extrabold tracking-tight text-foreground">
           {SITE_CONFIG.brand}
         </span>
