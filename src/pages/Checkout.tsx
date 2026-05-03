@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/psotec-hero.png";
 
-const PRODUCT = { title: "Pomada Psotec", price: 0.01, quantity: 1 };
+const PRODUCT = { title: "Pomada Psotec", price: 169, quantity: 1 };
 const ORIGIN_CEP = "79830080"; // CEP de origem (remetente)
 
 type Shipping = { id: string; name: string; days: string; price: number };
@@ -21,13 +21,13 @@ function calcShipping(destState: string): Shipping[] {
   const isSame = sameRegion.includes(destState.toUpperCase());
   if (isSame) {
     return [
-      { id: "PAC", name: "PAC", days: "5-8 dias úteis", price: 0 },
-      { id: "SEDEX", name: "SEDEX", days: "2-3 dias úteis", price: 0 },
+      { id: "PAC", name: "PAC", days: "5-8 dias úteis", price: 19.9 },
+      { id: "SEDEX", name: "SEDEX", days: "2-3 dias úteis", price: 32.5 },
     ];
   }
   return [
-    { id: "PAC", name: "PAC", days: "8-14 dias úteis", price: 0 },
-    { id: "SEDEX", name: "SEDEX", days: "3-5 dias úteis", price: 0 },
+    { id: "PAC", name: "PAC", days: "8-14 dias úteis", price: 29.9 },
+    { id: "SEDEX", name: "SEDEX", days: "3-5 dias úteis", price: 49.9 },
   ];
 }
 
