@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Clock, XCircle, Loader2, Home, MessageCircle } from "lucide-react";
-import { siteConfig } from "@/config/site";
+import { SITE_CONFIG } from "@/config/site";
 
 type Order = {
   id: string;
@@ -89,7 +89,7 @@ export default function ThankYou() {
 
   const info = statusInfo(order?.status ?? "pending");
   const Icon = info.Icon;
-  const wppUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
+  const wppUrl = `https://wa.me/${SITE_CONFIG.whatsappNumber}?text=${encodeURIComponent(
     `Olá! Acabei de fazer o pedido ${orderId ?? ""} e gostaria de tirar uma dúvida.`
   )}`;
 
