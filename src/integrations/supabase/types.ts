@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       orders: {
         Row: {
+          boleto_url: string | null
           cep: string
           city: string
           complement: string | null
@@ -29,6 +30,9 @@ export type Database = {
           neighborhood: string
           number: string
           paid_at: string | null
+          payment_method: string | null
+          pix_qr_code: string | null
+          pix_qr_code_text: string | null
           product_price: number
           shipping_method: string
           shipping_price: number
@@ -39,6 +43,7 @@ export type Database = {
           tracking_code: string | null
         }
         Insert: {
+          boleto_url?: string | null
           cep: string
           city: string
           complement?: string | null
@@ -52,6 +57,9 @@ export type Database = {
           neighborhood: string
           number: string
           paid_at?: string | null
+          payment_method?: string | null
+          pix_qr_code?: string | null
+          pix_qr_code_text?: string | null
           product_price: number
           shipping_method: string
           shipping_price: number
@@ -62,6 +70,7 @@ export type Database = {
           tracking_code?: string | null
         }
         Update: {
+          boleto_url?: string | null
           cep?: string
           city?: string
           complement?: string | null
@@ -75,6 +84,9 @@ export type Database = {
           neighborhood?: string
           number?: string
           paid_at?: string | null
+          payment_method?: string | null
+          pix_qr_code?: string | null
+          pix_qr_code_text?: string | null
           product_price?: number
           shipping_method?: string
           shipping_price?: number
