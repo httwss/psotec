@@ -1,67 +1,54 @@
-# Plano: Profissionalizar checkout Mercado Pago
+## Objetivo
+Migrar do **Checkout Pro** (redireciona pro site do Mercado Pago) para o **Checkout Transparente** (pagamento processado dentro do seu site, usando MP SDK + Bricks).
 
-## 1. Liberar todos os métodos de pagamento
-Em `supabase/functions/create-checkout/index.ts`, adicionar à preference:
-```ts
-payment_methods: {
-  excluded_payment_types: [],
-  excluded_payment_methods: [],
-  installments: 12,
-}
-```
-E ajustar `back_urls.success` para `/obrigado?order=<id>`.
+## Métodos de pagamento suportados
+- **PIX** — gera QR Code + código copia-e-cola direto na sua página de obrigado
+- **Cartão de crédito** — formulário tokenizado pelo SDK do MP (até 12x), seu site nunca toca no número do cartão
+- **Boleto bancário** — gera linha digitável
 
-## 2. Webhook do Mercado Pago
-Criar nova edge function pública `supabase/functions/mp-webhook/index.ts` (`verify_jwt = false`):
-- Recebe POST do MP com `{ type: "payment", data: { id } }`
-- Busca pagamento: `GET https://api.mercadopago.com/v1/payments/{id}` com Bearer token
-- Lê `external_reference` (= order.id) e `status` (`approved`/`pending`/`rejected`/`in_process`)
-- Atualiza `orders.status` + novos campos `mp_payment_id`, `paid_at` via service role
-- Responde 200 sempre (MP exige)
+## O que muda
 
-Migration: adicionar colunas em `orders`:
-- `mp_payment_id text`
-- `paid_at timestamptz`
-- índice em `mp_preference_id`
+### Frontend (`src/pages/Checkout.tsx`)
+- Após preencher dados de entrega, em vez de redirecionar pro MP, mostra um **seletor de método de pagamento** (PIX / Cartão / Boleto) renderizado pelos **Payment Brick** do MP (`@mercadopago/sdk-react`).
+- Public key (`APP_USR-f58b80f2-...`) usada pra inicializar o SDK no browser — fica no código (é pública por design).
+- Submit do Brick → chama nova edge function `process-payment` com o `formData` tokenizado.
 
-URL do webhook a configurar no painel MP:
-`https://anyuhgqjmydlauqaukrp.supabase.co/functions/v1/mp-webhook`
+### Backend
+**Renomear** `create-checkout` → `create-order` (só cria pedido no banco e devolve `order_id`, sem MP preference).
 
-Adicionar `notification_url` na preference apontando para essa URL.
+**Nova edge function** `process-payment`:
+- Recebe `order_id` + `formData` do Brick (token, método, parcelas, payer)
+- Chama `POST https://api.mercadopago.com/v1/payments` com Bearer do `MERCADO_PAGO_ACCESS_TOKEN`
+- Atualiza `orders` com `mp_payment_id`, `status`, e (pra PIX/boleto) retorna QR code base64, `qr_code` copia-e-cola, ou linha digitável do boleto
 
-## 3. Página de sucesso `/obrigado`
-Criar `src/pages/ThankYou.tsx` e rota em `src/App.tsx`:
-- Lê `?order=<id>&status=...` da query
-- Busca pedido no banco (RLS pública de SELECT por id ou edge function leve)
-- Mostra: número do pedido, status do pagamento (com badge), resumo (produto, frete, total, endereço), próximos passos, CTA WhatsApp e voltar à home
-- Polling a cada 4s nos primeiros 60s para refletir confirmação do webhook (PIX)
+**`mp-webhook`** — sem mudanças, continua atualizando status quando o pagamento aprovar.
 
-Para evitar expor todos os pedidos: criar edge function `get-order` que recebe `id` e retorna apenas dados não-sensíveis, ou policy RLS de SELECT por id (sem listar). Vou usar **edge function** `get-order` (mais seguro).
+### Página de obrigado (`src/pages/ThankYou.tsx`)
+- Se PIX → mostra QR Code (imagem base64) + código copia-e-cola + botão "Copiar"
+- Se boleto → mostra linha digitável + link pro PDF
+- Se cartão aprovado → mensagem de sucesso direta
+- Polling existente continua funcionando pra detectar aprovação
 
-## 4. Painel admin de pedidos
-- Tabela `user_roles` + enum `app_role` + função `has_role` (padrão seguro)
-- Habilitar auth (email/senha) e criar página `/auth` (login/signup)
-- RLS em `orders`: admins podem SELECT/UPDATE; ninguém mais
-- Página `/admin/pedidos` (`src/pages/AdminOrders.tsx`):
-  - Lista pedidos com filtro por status (pending, approved, rejected, shipped)
-  - Detalhe expandível com endereço completo, frete, total
-  - Botão para marcar como "enviado" + campo de código de rastreio (nova coluna `tracking_code text`)
-- Link no Navbar visível só para admins
+### Banco
+Adicionar 3 colunas nullable em `orders`:
+- `payment_method` (text) — `pix` / `credit_card` / `bolbradesco`
+- `pix_qr_code` (text) — base64 do QR
+- `pix_qr_code_text` (text) — copia-e-cola
+- `boleto_url` (text) — link do PDF
 
-Primeiro admin: após signup, rodar insert manual atribuindo role 'admin'.
+## Detalhes técnicos
+- Instalar `@mercadopago/sdk-react`
+- Public key armazenada em `src/config/site.ts` (ou hardcoded no Checkout) — **não é segredo**
+- Access token continua só no backend (já está como secret)
+- CORS já configurado nas funções existentes — replicar padrão
+- Fluxo de cartão: Brick tokeniza → manda token → backend cria payment com `token`, `installments`, `payment_method_id`, `issuer_id`, `payer.email`, `transaction_amount`
+- Importante: `transaction_amount` no backend é calculado a partir do pedido salvo (nunca confiar em valor vindo do client)
 
-## Arquivos afetados
-- `supabase/functions/create-checkout/index.ts` (editar)
-- `supabase/functions/mp-webhook/index.ts` (novo)
-- `supabase/functions/get-order/index.ts` (novo)
-- `supabase/config.toml` (adicionar mp-webhook e get-order com verify_jwt=false)
-- `supabase/migrations/*` (colunas orders + user_roles + RLS)
-- `src/pages/ThankYou.tsx` (novo)
-- `src/pages/AdminOrders.tsx` (novo)
-- `src/pages/Auth.tsx` (novo)
-- `src/App.tsx` (rotas)
-- `src/components/landing/Navbar.tsx` (link admin condicional)
+## Riscos
+- Boleto e PIX nem sempre estão habilitados em conta nova do MP — vai precisar conferir no painel MP se ambos estão liberados pra essa conta
+- Cartões em produção podem exigir validação anti-fraude adicional do MP
 
-## Confirmações antes de implementar
-- Token MP atual já é de produção (`APP_USR-...`)? Se for sandbox (`TEST-...`), webhook funciona igual mas pagamentos são fictícios.
-- OK criar sistema de auth (email+senha, sem Google) só para o admin?
+## Fora do escopo
+- Salvar cartão pra próximas compras
+- Assinaturas recorrentes
+- Split de pagamento
