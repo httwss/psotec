@@ -5,13 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Loader2, ShoppingBag, ArrowLeft, Minus, Plus, Truck } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { initMercadoPago, Payment } from "@mercadopago/sdk-react";
 import heroImage from "@/assets/psotec-hero.png";
 
-const PRODUCT = { title: "Pomada Psotec", price: 169, quantity: 1 };
+const PRODUCT = { title: "Pomada Psotec", price: 169 };
+const FREE_SHIPPING_MIN_QTY = 3;
 const MP_PUBLIC_KEY = "APP_USR-f58b80f2-818a-4984-b880-e90e999238c7";
 
 initMercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
@@ -51,15 +52,19 @@ export default function Checkout() {
   const [shippingId, setShippingId] = useState<string>("");
   const [creating, setCreating] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
 
   const set = (k: keyof typeof form, v: string) =>
     setForm((f) => ({ ...f, [k]: v }));
 
+  const isFreeShipping = quantity >= FREE_SHIPPING_MIN_QTY;
   const selectedShipping = useMemo(
     () => shippingOptions.find((s) => s.id === shippingId),
     [shippingOptions, shippingId]
   );
-  const total = PRODUCT.price + (selectedShipping?.price ?? 0);
+  const productSubtotal = PRODUCT.price * quantity;
+  const shippingCost = isFreeShipping ? 0 : (selectedShipping?.price ?? 0);
+  const total = productSubtotal + shippingCost;
 
   useEffect(() => {
     const cepDigits = onlyDigits(form.cep);
@@ -132,8 +137,11 @@ export default function Checkout() {
             neighborhood: form.neighborhood.trim(), city: form.city.trim(),
             state: form.state.trim().toUpperCase(),
           },
-          shipping: { method: selectedShipping.name, price: selectedShipping.price },
-          product: PRODUCT,
+          shipping: {
+            method: isFreeShipping ? `${selectedShipping.name} (Grátis)` : selectedShipping.name,
+            price: isFreeShipping ? 0 : selectedShipping.price,
+          },
+          product: { ...PRODUCT, quantity },
         },
       });
       if (error) throw error;
@@ -223,7 +231,13 @@ export default function Checkout() {
 
             <Card>
               <CardHeader><CardTitle>Frete</CardTitle></CardHeader>
-              <CardContent>
+              <CardContent className="space-y-3">
+                {isFreeShipping && (
+                  <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 p-3 text-sm font-semibold text-primary">
+                    <Truck className="h-4 w-4" />
+                    Frete grátis aplicado! 🎉 (3+ unidades)
+                  </div>
+                )}
                 {shippingOptions.length === 0 ? (
                   <p className="text-sm text-muted-foreground">Informe um CEP válido para calcular o frete.</p>
                 ) : (
@@ -238,7 +252,13 @@ export default function Checkout() {
                             <div className="text-sm text-muted-foreground">{s.days}</div>
                           </div>
                         </div>
-                        <div className="font-semibold">R$ {s.price.toFixed(2).replace(".", ",")}</div>
+                        <div className="font-semibold">
+                          {isFreeShipping ? (
+                            <span className="text-primary">Grátis</span>
+                          ) : (
+                            `R$ ${s.price.toFixed(2).replace(".", ",")}`
+                          )}
+                        </div>
                       </label>
                     ))}
                   </RadioGroup>
@@ -297,19 +317,50 @@ export default function Checkout() {
               <CardContent className="space-y-4">
                 <div className="flex gap-3">
                   <img src={heroImage} alt={PRODUCT.title} className="h-20 w-20 rounded-lg object-cover" />
-                  <div>
+                  <div className="flex-1">
                     <div className="font-semibold">{PRODUCT.title}</div>
-                    <div className="text-sm text-muted-foreground">Quantidade: 1</div>
+                    <div className="text-sm text-muted-foreground">R$ {PRODUCT.price.toFixed(2).replace(".", ",")} / un</div>
+                    <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-border">
+                      <Button type="button" variant="ghost" size="icon" className="h-8 w-8"
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={!!orderId || quantity <= 1}>
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="min-w-6 text-center text-sm font-semibold">{quantity}</span>
+                      <Button type="button" variant="ghost" size="icon" className="h-8 w-8"
+                        onClick={() => setQuantity((q) => Math.min(99, q + 1))} disabled={!!orderId}>
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
+
+                {!isFreeShipping ? (
+                  <div className="rounded-lg border border-dashed border-primary/40 bg-primary/5 p-3 text-xs text-foreground">
+                    🚚 Adicione mais <strong>{FREE_SHIPPING_MIN_QTY - quantity}</strong>{" "}
+                    {FREE_SHIPPING_MIN_QTY - quantity === 1 ? "unidade" : "unidades"} e ganhe <strong>frete grátis</strong>!
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-primary/40 bg-primary/10 p-3 text-xs font-semibold text-primary">
+                    🎉 Você ganhou frete grátis!
+                  </div>
+                )}
+
                 <div className="space-y-2 border-t border-border pt-4 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Produto</span>
-                    <span>R$ {PRODUCT.price.toFixed(2).replace(".", ",")}</span>
+                    <span className="text-muted-foreground">Produto ({quantity}x)</span>
+                    <span>R$ {productSubtotal.toFixed(2).replace(".", ",")}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Frete</span>
-                    <span>{selectedShipping ? `R$ ${selectedShipping.price.toFixed(2).replace(".", ",")}` : "—"}</span>
+                    <span>
+                      {isFreeShipping ? (
+                        <span className="font-semibold text-primary">Grátis</span>
+                      ) : selectedShipping ? (
+                        `R$ ${selectedShipping.price.toFixed(2).replace(".", ",")}`
+                      ) : (
+                        "—"
+                      )}
+                    </span>
                   </div>
                   <div className="flex justify-between border-t border-border pt-3 text-base font-bold">
                     <span>Total</span>
