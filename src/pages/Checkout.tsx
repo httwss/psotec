@@ -52,15 +52,19 @@ export default function Checkout() {
   const [shippingId, setShippingId] = useState<string>("");
   const [creating, setCreating] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
 
   const set = (k: keyof typeof form, v: string) =>
     setForm((f) => ({ ...f, [k]: v }));
 
+  const isFreeShipping = quantity >= FREE_SHIPPING_MIN_QTY;
   const selectedShipping = useMemo(
     () => shippingOptions.find((s) => s.id === shippingId),
     [shippingOptions, shippingId]
   );
-  const total = PRODUCT.price + (selectedShipping?.price ?? 0);
+  const productSubtotal = PRODUCT.price * quantity;
+  const shippingCost = isFreeShipping ? 0 : (selectedShipping?.price ?? 0);
+  const total = productSubtotal + shippingCost;
 
   useEffect(() => {
     const cepDigits = onlyDigits(form.cep);
