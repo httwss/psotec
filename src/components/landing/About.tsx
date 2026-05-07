@@ -4,7 +4,7 @@ import aboutImage from "@/assets/psotec-about.jpeg";
 const features = [
   { icon: Leaf, title: "Fórmula natural", desc: "Ativos botânicos selecionados para peles sensíveis." },
   { icon: FlaskConical, title: "Testado em laboratório", desc: "Eficácia comprovada em estudos dermatológicos." },
-  { icon: ShieldCheck, title: "Seguro para uso adulto", desc: "Sem corticoides, sem parabenos, sem fragrâncias agressivas." },
+  { icon: ShieldCheck, title: "Seguro para uso adulto", desc: "Fórmula dermatologicamente testada, com uso responsável de corticoide na dosagem ideal." },
   { icon: HeartPulse, title: "Cuidado contínuo", desc: "Restaura a barreira cutânea e mantém a hidratação." },
 ];
 
