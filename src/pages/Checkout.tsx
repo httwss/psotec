@@ -231,7 +231,13 @@ export default function Checkout() {
 
             <Card>
               <CardHeader><CardTitle>Frete</CardTitle></CardHeader>
-              <CardContent>
+              <CardContent className="space-y-3">
+                {isFreeShipping && (
+                  <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 p-3 text-sm font-semibold text-primary">
+                    <Truck className="h-4 w-4" />
+                    Frete grátis aplicado! 🎉 (3+ unidades)
+                  </div>
+                )}
                 {shippingOptions.length === 0 ? (
                   <p className="text-sm text-muted-foreground">Informe um CEP válido para calcular o frete.</p>
                 ) : (
@@ -246,7 +252,13 @@ export default function Checkout() {
                             <div className="text-sm text-muted-foreground">{s.days}</div>
                           </div>
                         </div>
-                        <div className="font-semibold">R$ {s.price.toFixed(2).replace(".", ",")}</div>
+                        <div className="font-semibold">
+                          {isFreeShipping ? (
+                            <span className="text-primary">Grátis</span>
+                          ) : (
+                            `R$ ${s.price.toFixed(2).replace(".", ",")}`
+                          )}
+                        </div>
                       </label>
                     ))}
                   </RadioGroup>
