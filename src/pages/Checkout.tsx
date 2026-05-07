@@ -137,8 +137,11 @@ export default function Checkout() {
             neighborhood: form.neighborhood.trim(), city: form.city.trim(),
             state: form.state.trim().toUpperCase(),
           },
-          shipping: { method: selectedShipping.name, price: selectedShipping.price },
-          product: PRODUCT,
+          shipping: {
+            method: isFreeShipping ? `${selectedShipping.name} (Grátis)` : selectedShipping.name,
+            price: isFreeShipping ? 0 : selectedShipping.price,
+          },
+          product: { ...PRODUCT, quantity },
         },
       });
       if (error) throw error;
