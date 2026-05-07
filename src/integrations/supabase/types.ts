@@ -28,6 +28,7 @@ export type Database = {
           mp_payment_id: string | null
           mp_preference_id: string | null
           neighborhood: string
+          notified_at: string | null
           number: string
           paid_at: string | null
           payment_method: string | null
@@ -55,6 +56,7 @@ export type Database = {
           mp_payment_id?: string | null
           mp_preference_id?: string | null
           neighborhood: string
+          notified_at?: string | null
           number: string
           paid_at?: string | null
           payment_method?: string | null
@@ -82,6 +84,7 @@ export type Database = {
           mp_payment_id?: string | null
           mp_preference_id?: string | null
           neighborhood?: string
+          notified_at?: string | null
           number?: string
           paid_at?: string | null
           payment_method?: string | null
