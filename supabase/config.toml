@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.get-order]
 verify_jwt = false
+
+[functions.send-order-telegram]
+verify_jwt = false
