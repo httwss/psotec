@@ -317,19 +317,50 @@ export default function Checkout() {
               <CardContent className="space-y-4">
                 <div className="flex gap-3">
                   <img src={heroImage} alt={PRODUCT.title} className="h-20 w-20 rounded-lg object-cover" />
-                  <div>
+                  <div className="flex-1">
                     <div className="font-semibold">{PRODUCT.title}</div>
-                    <div className="text-sm text-muted-foreground">Quantidade: 1</div>
+                    <div className="text-sm text-muted-foreground">R$ {PRODUCT.price.toFixed(2).replace(".", ",")} / un</div>
+                    <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-border">
+                      <Button type="button" variant="ghost" size="icon" className="h-8 w-8"
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={!!orderId || quantity <= 1}>
+                        <Minus className="h-3 w-3" />
+                      </Button>
+                      <span className="min-w-6 text-center text-sm font-semibold">{quantity}</span>
+                      <Button type="button" variant="ghost" size="icon" className="h-8 w-8"
+                        onClick={() => setQuantity((q) => Math.min(99, q + 1))} disabled={!!orderId}>
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
+
+                {!isFreeShipping ? (
+                  <div className="rounded-lg border border-dashed border-primary/40 bg-primary/5 p-3 text-xs text-foreground">
+                    🚚 Adicione mais <strong>{FREE_SHIPPING_MIN_QTY - quantity}</strong>{" "}
+                    {FREE_SHIPPING_MIN_QTY - quantity === 1 ? "unidade" : "unidades"} e ganhe <strong>frete grátis</strong>!
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-primary/40 bg-primary/10 p-3 text-xs font-semibold text-primary">
+                    🎉 Você ganhou frete grátis!
+                  </div>
+                )}
+
                 <div className="space-y-2 border-t border-border pt-4 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Produto</span>
-                    <span>R$ {PRODUCT.price.toFixed(2).replace(".", ",")}</span>
+                    <span className="text-muted-foreground">Produto ({quantity}x)</span>
+                    <span>R$ {productSubtotal.toFixed(2).replace(".", ",")}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Frete</span>
-                    <span>{selectedShipping ? `R$ ${selectedShipping.price.toFixed(2).replace(".", ",")}` : "—"}</span>
+                    <span>
+                      {isFreeShipping ? (
+                        <span className="font-semibold text-primary">Grátis</span>
+                      ) : selectedShipping ? (
+                        `R$ ${selectedShipping.price.toFixed(2).replace(".", ",")}`
+                      ) : (
+                        "—"
+                      )}
+                    </span>
                   </div>
                   <div className="flex justify-between border-t border-border pt-3 text-base font-bold">
                     <span>Total</span>
