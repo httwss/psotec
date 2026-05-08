@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,56 +7,54 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 220 25% 10%;
+    --foreground: 210 40% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 10%;
+    --card-foreground: 210 40% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 10%;
+    --popover-foreground: 210 40% 12%;
 
-    /* Brand: refined teal-blue */
-    --primary: 196 85% 32%;
+    /* Brand: deep medical blue */
+    --primary: 210 90% 38%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 196 70% 48%;
+    --primary-glow: 200 95% 55%;
 
-    /* Sage green */
-    --secondary: 150 40% 40%;
+    /* Health green */
+    --secondary: 152 65% 42%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-glow: 150 45% 52%;
+    --secondary-glow: 152 70% 55%;
 
-    --muted: 210 20% 96%;
-    --muted-foreground: 220 15% 48%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 210 20% 45%;
 
-    --accent: 196 40% 94%;
-    --accent-foreground: 196 85% 25%;
+    --accent: 195 85% 92%;
+    --accent-foreground: 210 90% 30%;
 
-    --destructive: 0 72% 55%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     /* WhatsApp green */
-    --whatsapp: 142 60% 38%;
+    --whatsapp: 142 70% 45%;
     --whatsapp-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 88%;
-    --ring: 196 85% 32%;
+    --border: 210 30% 90%;
+    --input: 210 30% 90%;
+    --ring: 210 90% 38%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(160deg, hsl(196 40% 97%) 0%, hsl(0 0% 100%) 45%, hsl(150 30% 97%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(195 85% 96%) 0%, hsl(0 0% 100%) 50%, hsl(152 50% 96%) 100%);
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
     --gradient-health: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
-    --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(196 30% 97%) 100%);
-    --gradient-cream: linear-gradient(160deg, hsl(40 30% 98%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(195 60% 97%) 100%);
 
     /* Shadows */
-    --shadow-soft: 0 2px 16px -2px hsl(220 30% 40% / 0.08);
-    --shadow-card: 0 8px 32px -8px hsl(220 30% 30% / 0.12);
-    --shadow-glow: 0 16px 48px -12px hsl(var(--primary) / 0.25);
-    --shadow-cta: 0 8px 24px -4px hsl(var(--whatsapp) / 0.35);
-    --shadow-float: 0 24px 64px -16px hsl(220 30% 20% / 0.18);
+    --shadow-soft: 0 4px 20px -4px hsl(210 50% 50% / 0.1);
+    --shadow-card: 0 10px 40px -10px hsl(210 60% 30% / 0.15);
+    --shadow-glow: 0 20px 60px -15px hsl(var(--primary) / 0.4);
+    --shadow-cta: 0 10px 30px -5px hsl(var(--whatsapp) / 0.5);
 
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -78,19 +76,14 @@
     @apply border-border;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
-
   body {
     @apply bg-background text-foreground;
-    font-family: 'DM Sans', system-ui, sans-serif;
+    font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
-    letter-spacing: -0.01em;
   }
 
   h1, h2, h3, h4 {
-    font-family: 'DM Serif Display', Georgia, serif;
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
     @apply tracking-tight;
   }
 }
@@ -100,7 +93,6 @@
   .gradient-primary { background: var(--gradient-primary); }
   .gradient-health { background: var(--gradient-health); }
   .gradient-soft { background: var(--gradient-soft); }
-  .gradient-cream { background: var(--gradient-cream); }
   .text-gradient-health {
     background: var(--gradient-health);
     -webkit-background-clip: text;
@@ -111,14 +103,6 @@
   .shadow-card { box-shadow: var(--shadow-card); }
   .shadow-glow { box-shadow: var(--shadow-glow); }
   .shadow-cta { box-shadow: var(--shadow-cta); }
-  .shadow-float { box-shadow: var(--shadow-float); }
   .transition-smooth { transition: var(--transition-smooth); }
   .transition-bounce { transition: var(--transition-bounce); }
-
-  .font-display {
-    font-family: 'DM Serif Display', Georgia, serif;
-  }
-  .font-sans-dm {
-    font-family: 'DM Sans', system-ui, sans-serif;
-  }
 }

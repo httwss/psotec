@@ -1,55 +1,56 @@
-import { Droplets, Wind, Feather, Sparkles } from "lucide-react";
+import { Droplets, Flame, Sparkles, Snowflake } from "lucide-react";
 
 const benefits = [
   {
+    icon: Snowflake,
+    title: "Reduz a coceira",
+    desc: "Sensação de alívio imediato logo nas primeiras aplicações.",
+  },
+  {
+    icon: Flame,
+    title: "Diminui a vermelhidão",
+    desc: "Acalma a inflamação e devolve o tom natural da pele.",
+  },
+  {
     icon: Droplets,
-    title: "Hidratação profunda",
-    desc: "Ativos umectantes que penetram nas camadas da pele e mantêm a hidratação por mais tempo.",
-    color: "bg-sky-50 text-sky-600",
-  },
-  {
-    icon: Wind,
-    title: "Mais conforto para a pele",
-    desc: "Sensação calmante desde as primeiras aplicações, reduzindo o desconforto do dia a dia.",
-    color: "bg-teal-50 text-teal-600",
-  },
-  {
-    icon: Feather,
-    title: "Redução do ressecamento",
-    desc: "Restaura a barreira cutânea natural e suaviza áreas secas e descamativas.",
-    color: "bg-green-50 text-green-700",
+    title: "Hidrata profundamente",
+    desc: "Nutrição intensiva que mantém a pele macia o dia todo.",
   },
   {
     icon: Sparkles,
-    title: "Sensação calmante",
-    desc: "Extrato botânicos com ação anti-inflamatória que acalma e equilibra a pele sensível.",
-    color: "bg-blue-50 text-blue-600",
+    title: "Reduz a descamação",
+    desc: "Renova a barreira cutânea e suaviza a textura da pele.",
   },
 ];
 
 export const Benefits = () => (
-  <section id="beneficios" className="py-24 md:py-32 bg-white">
-    <div className="container px-6">
-      <div className="mx-auto max-w-xl text-center">
-        <p className="mb-4 text-xs font-medium uppercase tracking-[0.2em] text-primary/60">
-          Por que Psotec
-        </p>
-        <h2 className="font-display text-3xl leading-tight text-foreground sm:text-4xl md:text-[2.75rem]">
-          Cuidado desenvolvido para peles que precisam de atenção especial
+  <section id="beneficios" className="py-20 md:py-28 bg-background">
+    <div className="container px-4">
+      <div className="mx-auto max-w-2xl text-center">
+        <span className="text-sm font-bold uppercase tracking-widest text-primary">
+          Benefícios reais
+        </span>
+        <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+          Cuidado completo para sua{" "}
+          <span className="text-gradient-health">pele sensível</span>
         </h2>
+        <p className="mt-4 text-lg text-muted-foreground">
+          Uma fórmula pensada para tratar a psoríase com suavidade e eficácia.
+        </p>
       </div>
 
-      <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {benefits.map((b) => (
+      <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {benefits.map((b, i) => (
           <div
             key={b.title}
-            className="group rounded-2xl border border-border/60 bg-white p-7 shadow-soft transition-smooth hover:-translate-y-1 hover:shadow-card"
+            className="group relative rounded-3xl border border-border bg-card p-8 shadow-soft transition-bounce hover:-translate-y-2 hover:shadow-card"
+            style={{ animationDelay: `${i * 100}ms` }}
           >
-            <div className={`mb-5 inline-flex h-11 w-11 items-center justify-center rounded-xl ${b.color}`}>
-              <b.icon className="h-5 w-5" />
+            <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl gradient-health shadow-glow">
+              <b.icon className="h-7 w-7 text-primary-foreground" />
             </div>
-            <h3 className="text-base font-semibold text-foreground leading-snug">{b.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{b.desc}</p>
+            <h3 className="text-xl font-bold text-foreground">{b.title}</h3>
+            <p className="mt-2 text-muted-foreground">{b.desc}</p>
           </div>
         ))}
       </div>
