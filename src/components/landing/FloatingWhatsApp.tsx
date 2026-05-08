@@ -7,8 +7,9 @@ export const FloatingWhatsApp = () => (
     target="_blank"
     rel="noopener noreferrer"
     aria-label="Falar no WhatsApp"
-    className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-whatsapp text-whatsapp-foreground shadow-cta transition-bounce hover:scale-110 animate-pulse-glow"
+    className="fixed bottom-6 right-6 z-50 flex h-13 w-13 items-center justify-center rounded-full bg-whatsapp text-white shadow-cta transition-smooth hover:scale-105 hover:shadow-lg"
+    style={{ height: "3.25rem", width: "3.25rem" }}
   >
-    <MessageCircle className="h-7 w-7" />
+    <MessageCircle className="h-6 w-6" />
   </a>
 );

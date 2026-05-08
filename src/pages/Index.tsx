@@ -7,10 +7,9 @@ import { About } from "@/components/landing/About";
 import { FinalCTA } from "@/components/landing/FinalCTA";
 import { Footer } from "@/components/landing/Footer";
 import { FloatingWhatsApp } from "@/components/landing/FloatingWhatsApp";
-import { PromoBadge } from "@/components/landing/PromoBadge";
 
 const Index = () => (
-  <main className="min-h-screen bg-background">
+  <main className="min-h-screen bg-white">
     <Navbar />
     <Hero />
     <Benefits />
@@ -20,7 +19,6 @@ const Index = () => (
     <FinalCTA />
     <Footer />
     <FloatingWhatsApp />
-    <PromoBadge />
   </main>
 );
 

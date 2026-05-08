@@ -1,64 +1,65 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { ShoppingBag, MessageCircle, Shield, Star } from "lucide-react";
+import { MessageCircle, ShieldCheck, Leaf, Users } from "lucide-react";
 import heroImage from "@/assets/psotec-hero.png";
 import { whatsappLink } from "@/config/site";
 
+const trustItems = [
+  { icon: ShieldCheck, label: "Fórmula dermatológica" },
+  { icon: Leaf, label: "Ativos naturais" },
+  { icon: Users, label: "+12 mil pessoas" },
+];
+
 export const Hero = () => (
-  <section className="relative overflow-hidden gradient-hero">
-    <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
-    <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />
+  <section className="relative overflow-hidden bg-white">
+    <div className="absolute inset-0 gradient-hero pointer-events-none" />
 
-    <div className="container relative grid gap-12 px-4 py-16 md:py-24 lg:grid-cols-2 lg:items-center lg:gap-8">
-      <div className="animate-fade-in">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-accent-foreground">
-          <Shield className="h-4 w-4" />
-          Fórmula dermatologicamente testada
-        </div>
+    <div className="container relative px-6 py-20 md:py-28 lg:py-36">
+      <div className="grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-20">
 
-        <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
-          Chega de sofrer com{" "}
-          <span className="text-gradient-health">psoríase</span>
-        </h1>
+        <div className="max-w-lg">
+          <p className="mb-5 text-xs font-medium uppercase tracking-[0.2em] text-primary/70">
+            Cuidado dermatológico especializado
+          </p>
 
-        <p className="mt-6 max-w-xl text-lg text-muted-foreground md:text-xl">
-          O <strong className="text-foreground">Psotec</strong> alivia a coceira, reduz a vermelhidão e elimina a descamação, devolvendo o conforto e a confiança da sua pele.
-        </p>
+          <h1 className="font-display text-[2.6rem] leading-[1.15] text-foreground sm:text-5xl md:text-[3.25rem]">
+            Cuide da sua pele com mais{" "}
+            <em className="not-italic text-primary">conforto</em> e confiança.
+          </h1>
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button asChild variant="hero" size="xl" className="rounded-2xl">
-            <Link to="/checkout">
-              <ShoppingBag /> Comprar Agora
-            </Link>
-          </Button>
-          <Button asChild variant="whatsapp" size="xl" className="rounded-2xl animate-pulse-glow">
-            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-              <MessageCircle /> Falar no WhatsApp
-            </a>
-          </Button>
-        </div>
+          <p className="mt-6 text-lg leading-[1.75] text-muted-foreground">
+            Uma rotina de cuidado para aliviar o desconforto da pele. O Psotec combina ativos hidratantes e calmantes para devolver suavidade e equilíbrio.
+          </p>
 
-        <div className="mt-8 flex items-center gap-6">
-          <div className="flex items-center gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="h-5 w-5 fill-secondary text-secondary" />
+          <div className="mt-9">
+            <Button
+              asChild
+              className="inline-flex h-14 items-center gap-2.5 rounded-full bg-whatsapp px-8 text-base font-medium text-white shadow-cta transition-smooth hover:bg-whatsapp/90 hover:shadow-lg"
+            >
+              <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
+                <MessageCircle className="h-5 w-5" />
+                Falar no WhatsApp
+              </a>
+            </Button>
+          </div>
+
+          <div className="mt-10 flex flex-wrap gap-6">
+            {trustItems.map((item) => (
+              <div key={item.label} className="flex items-center gap-2">
+                <item.icon className="h-4 w-4 text-primary/60" />
+                <span className="text-sm text-muted-foreground">{item.label}</span>
+              </div>
             ))}
           </div>
-          <p className="text-sm text-muted-foreground">
-            <strong className="text-foreground">+12 mil</strong> clientes satisfeitos
-          </p>
         </div>
-      </div>
 
-      <div className="relative flex justify-center animate-scale-in">
-        <div className="absolute inset-0 gradient-health rounded-[3rem] blur-3xl opacity-20" />
-        <div className="relative animate-float">
+        <div className="relative flex items-center justify-center lg:justify-end">
+          <div className="absolute h-[480px] w-[480px] rounded-full bg-gradient-to-br from-primary/8 to-secondary/8 blur-3xl" />
           <img
             src={heroImage}
             alt="Pomada Psotec para tratamento de psoríase"
-            width={1280}
-            height={1280}
-            className="relative z-10 w-full max-w-md rounded-[2.5rem] shadow-glow"
+            width={520}
+            height={520}
+            className="relative z-10 w-full max-w-[400px] drop-shadow-[0_40px_56px_rgba(0,90,130,0.18)]"
           />
         </div>
       </div>
