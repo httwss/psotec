@@ -374,9 +374,9 @@ export default function Checkout() {
                       : (<><ShoppingBag /> Continuar para pagamento</>)}
                   </Button>
                 ) : (
-                  <p className="text-center text-xs text-muted-foreground">
-                    Escolha a forma de pagamento abaixo
-                  </p>
+                  <div className="rounded-lg border border-primary/30 bg-primary/10 p-3 text-center text-sm font-semibold text-primary">
+                    ✅ Pedido reservado. Escolha a forma de pagamento abaixo ↓
+                  </div>
                 )}
                 <p className="text-center text-xs text-muted-foreground">
                   Pagamento seguro via Mercado Pago

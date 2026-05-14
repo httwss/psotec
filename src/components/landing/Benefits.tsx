@@ -3,23 +3,23 @@ import { Droplets, Flame, Sparkles, Snowflake } from "lucide-react";
 const benefits = [
   {
     icon: Snowflake,
-    title: "Reduz a coceira",
-    desc: "Sensação de alívio imediato logo nas primeiras aplicações.",
+    title: "Alivia a coceira",
+    desc: "Sensação de conforto desde as primeiras aplicações.",
   },
   {
     icon: Flame,
-    title: "Diminui a vermelhidão",
-    desc: "Acalma a inflamação e devolve o tom natural da pele.",
+    title: "Reduz a vermelhidão",
+    desc: "Ajuda a acalmar a pele e a uniformizar o tom.",
   },
   {
     icon: Droplets,
-    title: "Hidrata profundamente",
-    desc: "Nutrição intensiva que mantém a pele macia o dia todo.",
+    title: "Hidrata a pele",
+    desc: "Mantém a maciez e o conforto ao longo do dia.",
   },
   {
     icon: Sparkles,
-    title: "Reduz a descamação",
-    desc: "Renova a barreira cutânea e suaviza a textura da pele.",
+    title: "Suaviza a descamação",
+    desc: "Apoia a renovação da barreira cutânea.",
   },
 ];
 

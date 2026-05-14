@@ -13,16 +13,16 @@ export const Hero = () => (
       <div className="animate-fade-in">
         <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-accent-foreground">
           <Shield className="h-4 w-4" />
-          Fórmula dermatologicamente testada
+          Pomada dermatológica · uso adulto
         </div>
 
         <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
-          Chega de sofrer com{" "}
+          Alívio para a sua{" "}
           <span className="text-gradient-health">psoríase</span>
         </h1>
 
         <p className="mt-6 max-w-xl text-lg text-muted-foreground md:text-xl">
-          O <strong className="text-foreground">Psotec</strong> alivia a coceira, reduz a vermelhidão e elimina a descamação, devolvendo o conforto e a confiança da sua pele.
+          O <strong className="text-foreground">Psotec</strong> ajuda a aliviar a coceira, reduzir a vermelhidão e suavizar a descamação, devolvendo o conforto da sua pele.
         </p>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
