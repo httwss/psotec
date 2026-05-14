@@ -25,15 +25,15 @@ export const FinalCTA = () => (
       </p>
 
       <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-        <Button asChild variant="whatsapp" size="xl" className="rounded-2xl animate-pulse-glow">
-          <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
-            <MessageCircle /> Comprar pelo WhatsApp
-          </a>
-        </Button>
-        <Button asChild size="xl" variant="outline" className="rounded-2xl border-2 border-primary-foreground bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+        <Button asChild size="xl" className="rounded-2xl bg-primary-foreground text-primary hover:bg-primary-foreground/90 animate-pulse-glow">
           <Link to="/checkout">
             <ShoppingBag /> Comprar Agora
           </Link>
+        </Button>
+        <Button asChild size="xl" variant="outline" className="rounded-2xl border-2 border-primary-foreground bg-transparent text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+          <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
+            <MessageCircle /> Falar no WhatsApp
+          </a>
         </Button>
       </div>
 

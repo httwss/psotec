@@ -18,7 +18,7 @@ export const Navbar = () => (
         <a href="#depoimentos" className="text-sm font-medium text-muted-foreground transition-smooth hover:text-primary">Depoimentos</a>
         <a href="#sobre" className="text-sm font-medium text-muted-foreground transition-smooth hover:text-primary">Sobre</a>
       </nav>
-      <Button asChild variant="whatsapp" size="sm" className="rounded-full">
+      <Button asChild variant="hero" size="sm" className="rounded-full">
         <Link to="/checkout">Comprar</Link>
       </Button>
     </div>

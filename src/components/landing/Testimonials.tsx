@@ -8,19 +8,19 @@ const testimonials = [
     name: "Marina Oliveira",
     location: "São Paulo, SP",
     photo: t1,
-    text: "Sofri por mais de 10 anos com psoríase nos braços. Em 3 semanas usando o Psotec a coceira sumiu e a pele voltou a ficar lisa. Mudou minha vida!",
+    text: "Convivo há mais de 10 anos com psoríase nos braços. Em poucas semanas com o Psotec, senti grande alívio na coceira e a pele ficou bem mais confortável.",
   },
   {
     name: "Carlos Mendes",
     location: "Belo Horizonte, MG",
     photo: t2,
-    text: "Já tinha tentado de tudo. O Psotec foi o único que realmente funcionou. Hoje uso camisas de manga curta sem vergonha de novo.",
+    text: "Já tinha tentado várias opções. O Psotec foi o que melhor se adaptou à minha pele — voltei a usar camisas de manga curta com mais confiança.",
   },
   {
     name: "Juliana Castro",
     location: "Curitiba, PR",
     photo: t3,
-    text: "A hidratação é incrível. A vermelhidão diminuiu já na primeira semana. Recomendo de olhos fechados para quem sofre com psoríase.",
+    text: "A hidratação é ótima. Notei a vermelhidão diminuir já na primeira semana. Recomendo para quem convive com psoríase.",
   },
 ];
 
@@ -69,6 +69,10 @@ export const Testimonials = () => (
           </article>
         ))}
       </div>
+
+      <p className="mt-10 text-center text-xs text-muted-foreground">
+        *Depoimentos reais de clientes. Resultados podem variar de pessoa para pessoa. Em caso de dúvidas, consulte um dermatologista.
+      </p>
     </div>
   </section>
 );

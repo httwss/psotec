@@ -2,10 +2,10 @@ import { Leaf, ShieldCheck, FlaskConical, HeartPulse } from "lucide-react";
 import aboutImage from "@/assets/psotec-about.jpeg";
 
 const features = [
-  { icon: Leaf, title: "Fórmula natural", desc: "Ativos botânicos selecionados para peles sensíveis." },
-  { icon: FlaskConical, title: "Testado em laboratório", desc: "Eficácia comprovada em estudos dermatológicos." },
-  { icon: ShieldCheck, title: "Seguro para uso adulto", desc: "Fórmula dermatologicamente testada, com uso responsável de corticoide na dosagem ideal." },
-  { icon: HeartPulse, title: "Cuidado contínuo", desc: "Restaura a barreira cutânea e mantém a hidratação." },
+  { icon: Leaf, title: "Ativos calmantes", desc: "Combinação de hidratantes e calmantes para peles sensíveis." },
+  { icon: FlaskConical, title: "Testado em laboratório", desc: "Eficácia avaliada em estudos dermatológicos." },
+  { icon: ShieldCheck, title: "Uso adulto consciente", desc: "Fórmula dermatológica com corticoide na dosagem ideal." },
+  { icon: HeartPulse, title: "Cuidado contínuo", desc: "Ajuda a restaurar a barreira cutânea e manter a hidratação." },
 ];
 
 export const About = () => (
@@ -32,7 +32,7 @@ export const About = () => (
           <span className="text-gradient-health">unidas pela sua pele</span>
         </h2>
         <p className="mt-5 text-lg text-muted-foreground">
-          O <strong className="text-foreground">Psotec</strong> é uma pomada dermatológica desenvolvida com uma fórmula natural avançada que combina ativos hidratantes, calmantes e regeneradores. Atua diretamente nas causas do desconforto da psoríase, devolvendo conforto, maciez e segurança para a sua pele.
+          O <strong className="text-foreground">Psotec</strong> é uma pomada dermatológica que combina corticoide na dosagem ideal com ativos hidratantes e calmantes. Atua no desconforto da psoríase, ajudando a aliviar coceira, vermelhidão e descamação.
         </p>
 
         <div className="mt-8 grid gap-5 sm:grid-cols-2">
