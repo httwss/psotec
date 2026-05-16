@@ -41,6 +41,9 @@ export const FinalCTA = () => (
         <CreditCard className="h-4 w-4" />
         Em até <strong>12x no cartão</strong>
       </p>
+      <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/15 px-3 py-1 text-xs font-bold text-primary-foreground">
+        🔥 Leve 3 unidades por 12x de R$ 29,99 sem juros + frete grátis
+      </p>
 
       <p className="mt-3 text-sm font-medium text-primary-foreground/80">
         Atendimento direto: <strong>+{SITE_CONFIG.whatsappNumber}</strong>

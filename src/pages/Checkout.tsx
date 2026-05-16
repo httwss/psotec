@@ -11,28 +11,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { initMercadoPago, Payment } from "@mercadopago/sdk-react";
 import heroImage from "@/assets/psotec-hero.png";
 
-const PRODUCT = { title: "Pomada Psotec", price: 169 };
+const PRODUCT = { title: "Pomada Psotec", price: 119.97 };
 const FREE_SHIPPING_MIN_QTY = 3;
 const MP_PUBLIC_KEY = "APP_USR-f58b80f2-818a-4984-b880-e90e999238c7";
 
 initMercadoPago(MP_PUBLIC_KEY, { locale: "pt-BR" });
 
-type Shipping = { id: string; name: string; days: string; price: number };
-
-function calcShipping(destState: string): Shipping[] {
-  const sameRegion = ["MS", "MT", "GO", "DF", "SP", "PR"];
-  const isSame = sameRegion.includes(destState.toUpperCase());
-  if (isSame) {
-    return [
-      { id: "PAC", name: "PAC", days: "5-8 dias úteis", price: 19.9 },
-      { id: "SEDEX", name: "SEDEX", days: "2-3 dias úteis", price: 32.5 },
-    ];
-  }
-  return [
-    { id: "PAC", name: "PAC", days: "8-14 dias úteis", price: 29.9 },
-    { id: "SEDEX", name: "SEDEX", days: "3-5 dias úteis", price: 49.9 },
-  ];
-}
+type Shipping = { id: string; name: string; company?: string; days: string; price: number };
 
 const onlyDigits = (s: string) => s.replace(/\D/g, "");
 const formatCEP = (s: string) => {
@@ -75,6 +60,7 @@ export default function Checkout() {
     (async () => {
       setLoadingCep(true);
       try {
+        // 1) ViaCEP para preencher endereço
         const res = await fetch(`https://viacep.com.br/ws/${cepDigits}/json/`);
         const data = await res.json();
         if (cancelled) return;
@@ -89,17 +75,27 @@ export default function Checkout() {
           city: data.localidade || f.city,
           state: data.uf || f.state,
         }));
-        const opts = calcShipping(data.uf || "");
+
+        // 2) Melhor Envio para calcular frete real
+        const { data: ship, error: shipErr } = await supabase.functions.invoke("calc-shipping", {
+          body: { cep_destino: cepDigits, quantity },
+        });
+        if (cancelled) return;
+        if (shipErr || ship?.error) {
+          toast({ title: "Erro ao calcular frete", description: ship?.error ?? shipErr?.message, variant: "destructive" });
+          setShippingOptions([]); return;
+        }
+        const opts: Shipping[] = ship?.options ?? [];
         setShippingOptions(opts);
         setShippingId(opts[0]?.id ?? "");
       } catch {
-        if (!cancelled) toast({ title: "Erro ao consultar CEP", variant: "destructive" });
+        if (!cancelled) toast({ title: "Erro ao consultar CEP/frete", variant: "destructive" });
       } finally {
         if (!cancelled) setLoadingCep(false);
       }
     })();
     return () => { cancelled = true; };
-  }, [form.cep]);
+  }, [form.cep, quantity]);
 
   const validate = () => {
     const required: (keyof typeof form)[] = [
@@ -138,7 +134,7 @@ export default function Checkout() {
             state: form.state.trim().toUpperCase(),
           },
           shipping: {
-            method: isFreeShipping ? `${selectedShipping.name} (Grátis)` : selectedShipping.name,
+            method: `${selectedShipping.company ? selectedShipping.company + " " : ""}${selectedShipping.name}${isFreeShipping ? " (Grátis)" : ""}`,
             price: isFreeShipping ? 0 : selectedShipping.price,
           },
           product: { ...PRODUCT, quantity },
@@ -248,8 +244,8 @@ export default function Checkout() {
                         <div className="flex items-center gap-3">
                           <RadioGroupItem id={`ship-${s.id}`} value={s.id} />
                           <div>
-                            <div className="font-semibold">{s.name}</div>
-                            <div className="text-sm text-muted-foreground">{s.days}</div>
+                            <div className="font-semibold">{s.company ? `${s.company} — ${s.name}` : s.name}</div>
+                           <div className="text-sm text-muted-foreground">{s.days}</div>
                           </div>
                         </div>
                         <div className="font-semibold">
@@ -321,7 +317,9 @@ export default function Checkout() {
                     <div className="font-semibold">{PRODUCT.title}</div>
                     <div className="text-sm text-muted-foreground">R$ {PRODUCT.price.toFixed(2).replace(".", ",")} / un</div>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      Em até 12x no cartão
+                      {quantity >= FREE_SHIPPING_MIN_QTY
+                        ? <span className="font-bold text-secondary-foreground">🔥 12x de R$ 29,99 sem juros</span>
+                        : "Em até 12x no cartão"}
                     </p>
                     <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-border">
                       <Button type="button" variant="ghost" size="icon" className="h-8 w-8"

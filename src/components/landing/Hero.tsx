@@ -4,7 +4,7 @@ import { ShoppingBag, MessageCircle, Shield, Star, CreditCard } from "lucide-rea
 import heroImage from "@/assets/psotec-hero.png";
 import { whatsappLink } from "@/config/site";
 
-const PRODUCT_PRICE = 169;
+const PRODUCT_PRICE = 119.97;
 
 export const Hero = () => (
   <section className="relative overflow-hidden gradient-hero">
@@ -47,6 +47,9 @@ export const Hero = () => (
           <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
             <CreditCard className="h-4 w-4" />
             Em até <strong className="text-foreground">12x no cartão</strong>
+          </p>
+          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-secondary/15 px-3 py-1 text-xs font-bold text-secondary-foreground">
+            🔥 Leve 3 e pague <span className="text-secondary">12x de R$ 29,99 sem juros</span>
           </p>
         </div>
 
