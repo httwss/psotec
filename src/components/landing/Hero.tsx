@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ShoppingBag, MessageCircle, Shield, Star } from "lucide-react";
+import { ShoppingBag, MessageCircle, Shield, Star, CreditCard } from "lucide-react";
 import heroImage from "@/assets/psotec-hero.png";
 import { whatsappLink } from "@/config/site";
+
+const PRODUCT_PRICE = 169;
 
 export const Hero = () => (
   <section className="relative overflow-hidden gradient-hero">
@@ -36,6 +38,16 @@ export const Hero = () => (
               <MessageCircle /> Falar no WhatsApp
             </a>
           </Button>
+        </div>
+
+        <div className="mt-6">
+          <p className="text-2xl font-extrabold text-foreground">
+            R$ {PRODUCT_PRICE.toFixed(2).replace(".", ",")}
+          </p>
+          <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+            <CreditCard className="h-4 w-4" />
+            Em até <strong className="text-foreground">12x no cartão</strong>
+          </p>
         </div>
 
         <div className="mt-8 flex items-center gap-6">
