@@ -60,6 +60,7 @@ export default function Checkout() {
     (async () => {
       setLoadingCep(true);
       try {
+        // 1) ViaCEP para preencher endereço
         const res = await fetch(`https://viacep.com.br/ws/${cepDigits}/json/`);
         const data = await res.json();
         if (cancelled) return;
@@ -74,17 +75,27 @@ export default function Checkout() {
           city: data.localidade || f.city,
           state: data.uf || f.state,
         }));
-        const opts = calcShipping(data.uf || "");
+
+        // 2) Melhor Envio para calcular frete real
+        const { data: ship, error: shipErr } = await supabase.functions.invoke("calc-shipping", {
+          body: { cep_destino: cepDigits, quantity },
+        });
+        if (cancelled) return;
+        if (shipErr || ship?.error) {
+          toast({ title: "Erro ao calcular frete", description: ship?.error ?? shipErr?.message, variant: "destructive" });
+          setShippingOptions([]); return;
+        }
+        const opts: Shipping[] = ship?.options ?? [];
         setShippingOptions(opts);
         setShippingId(opts[0]?.id ?? "");
       } catch {
-        if (!cancelled) toast({ title: "Erro ao consultar CEP", variant: "destructive" });
+        if (!cancelled) toast({ title: "Erro ao consultar CEP/frete", variant: "destructive" });
       } finally {
         if (!cancelled) setLoadingCep(false);
       }
     })();
     return () => { cancelled = true; };
-  }, [form.cep]);
+  }, [form.cep, quantity]);
 
   const validate = () => {
     const required: (keyof typeof form)[] = [
