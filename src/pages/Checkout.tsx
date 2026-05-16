@@ -320,6 +320,9 @@ export default function Checkout() {
                   <div className="flex-1">
                     <div className="font-semibold">{PRODUCT.title}</div>
                     <div className="text-sm text-muted-foreground">R$ {PRODUCT.price.toFixed(2).replace(".", ",")} / un</div>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Em até 12x no cartão
+                    </p>
                     <div className="mt-2 inline-flex items-center gap-2 rounded-md border border-border">
                       <Button type="button" variant="ghost" size="icon" className="h-8 w-8"
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={!!orderId || quantity <= 1}>

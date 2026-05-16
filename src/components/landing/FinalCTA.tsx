@@ -37,7 +37,12 @@ export const FinalCTA = () => (
         </Button>
       </div>
 
-      <p className="mt-6 text-sm font-medium text-primary-foreground/80">
+      <p className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary-foreground/80">
+        <CreditCard className="h-4 w-4" />
+        Em até <strong>12x no cartão</strong>
+      </p>
+
+      <p className="mt-3 text-sm font-medium text-primary-foreground/80">
         Atendimento direto: <strong>+{SITE_CONFIG.whatsappNumber}</strong>
       </p>
 
