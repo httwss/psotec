@@ -22,7 +22,7 @@ const Index = () => (
     <FinalCTA />
     <Footer />
     <FloatingWhatsApp />
-    <PromoBadge />
+    
   </main>
 );
 
