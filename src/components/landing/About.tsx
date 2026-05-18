@@ -4,7 +4,7 @@ import aboutImage from "@/assets/psotec-about.jpeg";
 const features = [
   { icon: Leaf, title: "Ativos calmantes", desc: "Combinação de hidratantes e calmantes para peles sensíveis." },
   { icon: FlaskConical, title: "Testado em laboratório", desc: "Eficácia avaliada em estudos dermatológicos." },
-  { icon: ShieldCheck, title: "Uso adulto consciente", desc: "Fórmula dermatológica com corticoide na dosagem ideal." },
+  { icon: ShieldCheck, title: "Fórmula natural", desc: "Enriquecida com óleo de semente de uva, rico em antioxidantes." },
   { icon: HeartPulse, title: "Cuidado contínuo", desc: "Ajuda a restaurar a barreira cutânea e manter a hidratação." },
 ];
 
