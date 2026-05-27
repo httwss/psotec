@@ -95,9 +95,14 @@ Deno.serve(async (req) => {
 
     const payment = await mpRes.json();
     if (!mpRes.ok) {
-      console.error("MP error", payment);
+      // Log full details server-side only; never expose MP internals to the client.
+      console.error("MP error", JSON.stringify(payment));
       return new Response(
-        JSON.stringify({ error: payment?.message || "Falha ao processar pagamento", details: payment }),
+        JSON.stringify({
+          error: "Falha ao processar pagamento",
+          status: payment?.status ?? "rejected",
+          status_detail: payment?.status_detail ?? null,
+        }),
         { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
