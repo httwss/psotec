@@ -277,7 +277,6 @@ export default function Checkout() {
                       paymentMethods: {
                         creditCard: "all",
                         bankTransfer: ["pix"],
-                        ticket: "all",
                         maxInstallments: 12,
                       },
                     }}
