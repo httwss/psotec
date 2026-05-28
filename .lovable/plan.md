@@ -1,21 +1,41 @@
-## Corrigir tela branca no GitHub Pages
+## Plano para corrigir a tela branca no GitHub Pages
 
-O site está em `https://usuario.github.io/psotec/`, então o `base: "./"` atual não resolve corretamente os assets em rotas internas. Vou trocar para `base: "/psotec/"`.
+Vou aplicar uma correção focada para o site funcionar corretamente em `https://usuario.github.io/psotec/`.
 
-### Mudanças
+### 1. Ajustar o roteamento do React
+- Atualizar o `BrowserRouter` para usar `basename="/psotec"`.
+- Isso faz as rotas `/`, `/checkout`, `/obrigado`, `/auth` e `/admin/pedidos` funcionarem dentro da subpasta `/psotec/`.
+- Essa é a causa indicada pelo log atual: o app está tentando abrir `/psotec/` como se fosse uma rota interna e cai no 404.
 
-1. **`vite.config.ts`** — trocar `base: "./"` por `base: "/psotec/"`.
+### 2. Manter a configuração correta do Vite
+- Confirmar `base: "/psotec/"` em `vite.config.ts`.
+- Isso garante que os arquivos JS/CSS gerados em `dist` sejam carregados do caminho certo no GitHub Pages.
 
-2. **`public/404.html`** — ajustar `pathSegmentsToKeep = 1` para o hack de SPA funcionar em subpasta (preserva `/psotec/` ao redirecionar rotas como `/psotec/checkout`).
+### 3. Manter o fallback para rotas internas
+- Manter `public/404.html` com `pathSegmentsToKeep = 1`.
+- Isso evita erro 404 ao abrir diretamente links como `/psotec/checkout` ou `/psotec/obrigado`.
 
-3. **Rebuild + redeploy** — rodar `npm run deploy` para publicar a branch `gh-pages` com os caminhos corrigidos.
+### 4. Atualizar documentação se necessário
+- Ajustar o README apenas se houver instrução incorreta sobre o caminho/base.
 
-### Observações
+### Resultado esperado
+- `https://usuario.github.io/psotec/` abre a página inicial.
+- `https://usuario.github.io/psotec/checkout` não dá 404.
+- O build publicado no GitHub Pages carrega assets sem tela branca.
 
-- Não consigo fazer "commit automático" para o seu repo GitHub a partir daqui — o Lovable não tem credenciais do seu GitHub pessoal. O que posso fazer:
-  - Aplicar as mudanças no código do projeto (sincroniza automaticamente com o repo Lovable↔GitHub se você tem a integração nativa do Lovable ativada em **GitHub → Connect**).
-  - Ou você roda `git add . && git commit -m "fix: base path /psotec/" && git push` + `npm run deploy` localmente após eu aplicar.
+### Observação sobre commit/deploy
+Não consigo executar commit diretamente no seu GitHub pessoal daqui. Depois da correção, se a integração GitHub do Lovable estiver ativa, as mudanças sincronizam com o repositório. Para publicar no GitHub Pages via script manual, rode localmente:
 
-- Se o repo na verdade não se chama `psotec`, me diga o nome exato — o `base` precisa bater com o slug da URL.
+```bash
+npm install
+npm run deploy
+```
 
-- Se um dia mudar para domínio custom ou `usuario.github.io` (raiz), volta para `base: "/"`.
+Se a integração GitHub não estiver ativa, também será necessário fazer:
+
+```bash
+git add .
+git commit -m "fix: github pages routing"
+git push
+npm run deploy
+```
