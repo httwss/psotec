@@ -1,21 +1,11 @@
-## Plano
+Vou ajustar a publicação para GitHub Pages de forma que nenhum arquivo inexistente como `main.txt` seja chamado e a página não fique branca.
 
-1. **Corrigir a origem do deploy**
-   - Ajustar `package.json` para remover `homepage: "."`, porque isso pode gerar referências relativas incorretas no GitHub Pages.
-   - Manter o deploy usando `dist` e preservando `.nojekyll`.
+Plano:
+1. Procurar no projeto qualquer referência a `main.txt` e remover/corrigir se existir.
+2. Ajustar o `index.html` para usar caminhos compatíveis com GitHub Pages em `/psotec/`, incluindo favicon e assets.
+3. Revisar `public/404.html` para garantir que o fallback de SPA preserve corretamente `/psotec/`.
+4. Validar o resultado gerado em `dist/index.html`, confirmando que ele aponta para `/psotec/assets/...` e não para `/src/main.tsx` nem `main.txt`.
 
-2. **Garantir caminhos corretos no GitHub Pages**
-   - Manter `vite.config.ts` com `base: "/psotec/"`.
-   - Ajustar o fallback do `public/404.html` se necessário para preservar `/psotec/` em links diretos.
-
-3. **Evitar erro de favicon quebrando a leitura do site**
-   - Verificar se `public/favicon.ico` existe e está sendo publicado.
-   - Se necessário, adicionar uma referência explícita ao favicon em `index.html` usando o caminho com base correta.
-
-4. **Validar o build final**
-   - Rodar uma verificação de build e confirmar que o HTML gerado aponta para `/psotec/assets/...`, não para `/src/main.tsx`.
-   - Conferir se `.nojekyll`, `404.html` e `favicon.ico` entram em `dist`.
-
-## Detalhe técnico
-
-O erro em `src/main.tsx:1` no GitHub Pages geralmente significa que o navegador está tentando carregar o arquivo fonte TypeScript direto, em vez dos arquivos compilados de `dist/assets`. Isso acontece quando o deploy não publicou o `dist` correto ou quando os caminhos/base ficam inconsistentes.
+Detalhes técnicos:
+- O erro `main txt:1 404` indica que o navegador está tentando baixar um recurso chamado `main.txt` que não existe no GitHub Pages.
+- Se o erro persistir depois da correção local, o passo final será republicar o `dist` com `npm run deploy`, porque GitHub Pages pode estar servindo uma versão antiga.
