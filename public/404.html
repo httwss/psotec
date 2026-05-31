@@ -8,7 +8,7 @@
       // MIT License - https://github.com/rafgraph/spa-github-pages
       // Redireciona qualquer 404 para o index.html preservando o path original
       // como query string, que será decodificada pelo script no index.html.
-      var pathSegmentsToKeep = 1; // 1 para subpasta /psotec/; use 0 se publicar em dominio raiz
+      var pathSegmentsToKeep = 0; // 0 = dominio raiz; aumente se publicar em subpasta
       var l = window.location;
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +

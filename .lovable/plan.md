@@ -1,13 +1,54 @@
-Vou corrigir o app para que a URL publicada em `https://.../psotec/` abra a página inicial em vez de cair no `NotFound`.
+## Diagnóstico
 
-Plano:
-1. Ajustar o roteamento no `src/App.tsx` para tratar explicitamente a base `/psotec/` em ambiente GitHub Pages, evitando que `/psotec/` seja interpretado como rota inexistente.
-2. Revisar links internos que mandam para `/` para garantir que respeitem a base publicada, principalmente o link da página `NotFound`.
-3. Validar a configuração de publicação: `vite.config.ts` deve continuar com `base: "/psotec/"`, e o GitHub Pages deve apontar para a branch `gh-pages`, pasta `/root`.
-4. Depois da correção, o próximo deploy deve gerar um bundle novo e o GitHub Pages deve servir os arquivos estáticos corretos.
+O erro **não está nas pastas/branches do GitHub Pages**. Está no `vite.config.ts`:
 
-Detalhes técnicos:
-- A mensagem `404 Error: User attempted to access non-existent route: /psotec/` vem do componente `NotFound.tsx`, não do GitHub diretamente.
-- Isso significa que o JavaScript carregou, mas o React Router entendeu `/psotec/` como uma rota do app em vez da base do site.
-- A branch correta no GitHub Pages é `gh-pages`; a pasta deve ser `/root`, porque o comando `gh-pages -d dist --dotfiles` publica o conteúdo de `dist` diretamente na raiz dessa branch.
-- A branch `main` é só o código-fonte e não deve ser usada como origem do Pages para esse projeto Vite.
+```ts
+base: "/psotec/"   // ← problema
+```
+
+Esse valor força o build a gerar caminhos absolutos `/psotec/assets/...`, que:
+
+- ❌ Quebram no Lovable publicado (`psotec-ofc.lovable.app/`) — assets 404
+- ❌ Quebram no preview do Lovable — por isso você teve que entrar em `/psotec/` manualmente
+- ❌ Quebram no GitHub Pages se o repo não se chamar exatamente `psotec`
+
+Como você quer **os dois lugares**, a solução correta é usar caminhos relativos (`./`), exatamente como o `README.md` do projeto já documenta. Aí o mesmo build funciona em qualquer URL, qualquer repo, qualquer subpasta.
+
+## Mudanças
+
+### 1. `vite.config.ts`
+Trocar `base: "/psotec/"` por `base: "./"`.
+Resultado: assets ficam como `./assets/index-xxx.js` e funcionam em qualquer host.
+
+### 2. `src/App.tsx`
+Simplificar — remover toda a lógica de `routerBasename`. Com base relativo não precisa de basename no React Router. O roteamento volta a ser apenas `<BrowserRouter>` sem prop.
+
+### 3. `public/404.html`
+Trocar `pathSegmentsToKeep = 1` para `pathSegmentsToKeep = 0`. Sem subpasta `/psotec/`, o hack SPA do GitHub Pages precisa redirecionar a partir da raiz.
+
+### 4. `index.html`
+Já está OK (`<link rel="icon" href="./favicon.ico">` é relativo). Sem mudanças.
+
+### 5. `.lovable/plan.md`
+Atualizar para refletir a nova abordagem (base relativo) e remover a explicação antiga sobre `/psotec/`.
+
+## Passo a passo para você depois do deploy
+
+**Lovable**: clicar em Publish — vai funcionar direto em `https://psotec-ofc.lovable.app/`.
+
+**GitHub Pages**:
+1. `git add . && git commit -m "fix: base relativo"`
+2. `git push origin main`
+3. `npm run deploy` (publica `dist/` na branch `gh-pages`)
+4. Em **Settings → Pages**:
+   - Source: **Deploy from a branch**
+   - Branch: **`gh-pages`** / pasta **`/ (root)`**
+5. Acessar `https://SEU-USUARIO.github.io/NOME-DO-REPO/` — vai funcionar, **não importa o nome do repo**.
+
+## Sobre as pastas (sua dúvida original)
+
+- **Branch `main`** = código-fonte (React, `src/`). **Nunca** aponte o Pages para ela — Pages não compila TS/JSX, por isso dava `main.tsx 404`.
+- **Branch `gh-pages`** = site já compilado (`dist/`). É essa que o Pages deve servir.
+- **Pasta `/ (root)`** dentro da `gh-pages` está correta, porque o `gh-pages -d dist` publica o conteúdo do `dist` direto na raiz da branch (não dentro de uma subpasta `/dist`).
+
+Ou seja: a configuração que você já tem (`gh-pages` + `/root`) está certa. Só falta corrigir o `base` do Vite e redeployar.
