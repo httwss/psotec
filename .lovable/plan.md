@@ -1,11 +1,13 @@
-Vou ajustar a publicação para GitHub Pages de forma que nenhum arquivo inexistente como `main.txt` seja chamado e a página não fique branca.
+Vou corrigir o app para que a URL publicada em `https://.../psotec/` abra a página inicial em vez de cair no `NotFound`.
 
 Plano:
-1. Procurar no projeto qualquer referência a `main.txt` e remover/corrigir se existir.
-2. Ajustar o `index.html` para usar caminhos compatíveis com GitHub Pages em `/psotec/`, incluindo favicon e assets.
-3. Revisar `public/404.html` para garantir que o fallback de SPA preserve corretamente `/psotec/`.
-4. Validar o resultado gerado em `dist/index.html`, confirmando que ele aponta para `/psotec/assets/...` e não para `/src/main.tsx` nem `main.txt`.
+1. Ajustar o roteamento no `src/App.tsx` para tratar explicitamente a base `/psotec/` em ambiente GitHub Pages, evitando que `/psotec/` seja interpretado como rota inexistente.
+2. Revisar links internos que mandam para `/` para garantir que respeitem a base publicada, principalmente o link da página `NotFound`.
+3. Validar a configuração de publicação: `vite.config.ts` deve continuar com `base: "/psotec/"`, e o GitHub Pages deve apontar para a branch `gh-pages`, pasta `/root`.
+4. Depois da correção, o próximo deploy deve gerar um bundle novo e o GitHub Pages deve servir os arquivos estáticos corretos.
 
 Detalhes técnicos:
-- O erro `main txt:1 404` indica que o navegador está tentando baixar um recurso chamado `main.txt` que não existe no GitHub Pages.
-- Se o erro persistir depois da correção local, o passo final será republicar o `dist` com `npm run deploy`, porque GitHub Pages pode estar servindo uma versão antiga.
+- A mensagem `404 Error: User attempted to access non-existent route: /psotec/` vem do componente `NotFound.tsx`, não do GitHub diretamente.
+- Isso significa que o JavaScript carregou, mas o React Router entendeu `/psotec/` como uma rota do app em vez da base do site.
+- A branch correta no GitHub Pages é `gh-pages`; a pasta deve ser `/root`, porque o comando `gh-pages -d dist --dotfiles` publica o conteúdo de `dist` diretamente na raiz dessa branch.
+- A branch `main` é só o código-fonte e não deve ser usada como origem do Pages para esse projeto Vite.
