@@ -13,20 +13,13 @@ const Auth = lazy(() => import("./pages/Auth.tsx"));
 const AdminOrders = lazy(() => import("./pages/AdminOrders.tsx"));
 
 const queryClient = new QueryClient();
-const rawBase = import.meta.env.BASE_URL.replace(/\/$/, "");
-// Só aplica o basename quando a URL atual realmente está sob essa base
-// (evita NotFound no preview da Lovable, que serve em "/").
-const routerBasename =
-  rawBase && typeof window !== "undefined" && window.location.pathname.startsWith(rawBase)
-    ? rawBase
-    : undefined;
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename={routerBasename}>
+      <BrowserRouter>
         <Suspense fallback={<div className="min-h-screen bg-background text-foreground" />}>
           <Routes>
             <Route path="/" element={<Index />} />
