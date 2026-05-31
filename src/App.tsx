@@ -14,26 +14,40 @@ const AdminOrders = lazy(() => import("./pages/AdminOrders.tsx"));
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Suspense fallback={<div className="min-h-screen bg-background text-foreground" />}>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/obrigado" element={<ThankYou />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/admin/pedidos" element={<AdminOrders />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const deployBasePaths = ["/psotec", "/gh-pages"];
+
+const getRouterBasename = () => {
+  if (typeof window === "undefined") return undefined;
+
+  return deployBasePaths.find(
+    (basePath) => window.location.pathname === basePath || window.location.pathname.startsWith(`${basePath}/`)
+  );
+};
+
+const App = () => {
+  const routerBasename = getRouterBasename();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter basename={routerBasename}>
+          <Suspense fallback={<div className="min-h-screen bg-background text-foreground" />}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/obrigado" element={<ThankYou />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/admin/pedidos" element={<AdminOrders />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
