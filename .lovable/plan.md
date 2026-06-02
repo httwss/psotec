@@ -1,53 +1,33 @@
+## Diagnóstico
+
+O check `Deploy to GitHub Pages / build (push)` falhou em **21s** — tempo curto, típico de erro em `npm ci` (instalação de dependências), não no build do Vite.
+
+Causas prováveis, em ordem:
+
+1. **`npm ci` falhando por incompatibilidade `package-lock.json` × `package.json`** — o projeto tem `bun.lock`, `bun.lockb` e `package-lock.json`. Se o lockfile estiver desatualizado, `npm ci` aborta em segundos. O log do Actions confirma isso facilmente.
+2. **Secrets vazios sobrescrevendo `.env`** — o workflow passa `VITE_SUPABASE_*` a partir de `secrets.*`. Se você ainda não cadastrou esses Secrets no repositório, o GitHub injeta strings vazias, que vencem o `.env` commitado. Isso geralmente não derruba o build do Vite, mas vale eliminar.
+3. **Nome do repo ≠ `Psotec`** — não derrubaria o build, mas quebraria os caminhos em produção (assets carregariam de `/Psotec/...`).
+
 ## Plano
 
-### 1. Banner promocional acima da Navbar
-- Copiar `WhatsApp_Image_2026-05-15_at_8.41.41_PM.jpeg` para `src/assets/promo-banner.jpg`.
-- Criar `src/components/landing/PromoBanner.tsx` — faixa full-width clicável (Link para `/checkout`), responsiva (cover, max-h em desktop, sem corte do conteúdo principal em mobile via `object-cover`/`object-position`).
-- Renderizar em `src/pages/Index.tsx` como **primeiro** filho, antes de `<Navbar />`.
+### 1. Ajustar `.github/workflows/deploy.yml`
 
-### 2. Preço unitário R$ 169 → R$ 119,97
-- `src/components/landing/Hero.tsx`: `PRODUCT_PRICE = 119.97`.
-- `src/pages/Checkout.tsx`: `PRODUCT.price = 119.97`.
-- Atualizar o texto de parcelamento:
-  - 1–2 un: "Em até 12x no cartão" (valor da parcela calculado em cima do total com juros do MP — não prometer "sem juros").
-  - 3+ un: destacar "**12x de R$ 29,99 sem juros**" (3 × 119,97 ≈ 359,88 ≈ 12 × 29,99). Isso aparece no Hero (badge), no FinalCTA, e no resumo do Checkout quando `quantity >= 3`.
-- Atualizar `index.html` (OG/desc) se o preço aparece em meta.
+- Trocar `npm ci` por `npm install` (tolerante a lockfile fora de sync) **ou** rodar `npm install --package-lock-only` antes. Vou usar a primeira opção, mais simples.
+- Remover o bloco `env:` com `VITE_SUPABASE_*` — o `.env` já está commitado no repo (não está no `.gitignore`) e o Vite lê dele no build. Isso elimina a dependência de Secrets manuais no GitHub.
 
-### 3. Frete real via Melhor Envio (Sandbox=não, Produção)
-Substituir `calcShipping()` mockado por chamada à edge function.
+### 2. Pedir confirmação do nome do repo
 
-**Secret necessário:** `MELHOR_ENVIO_TOKEN` (token de produção do Melhor Envio — pedirei via add_secret).
+Se o repositório no GitHub **não** se chama exatamente `Psotec` (com P maiúsculo), o `base: "/Psotec/"` no `vite.config.ts` precisa ser ajustado pro nome real. Vou perguntar antes de mexer.
 
-**Nova edge function** `supabase/functions/calc-shipping/index.ts`:
-- POST `{ cep_destino: string }`.
-- Valida CEP com Zod, normaliza só dígitos.
-- Constantes do produto (origem + dimensões):
-  - CEP origem: `79830-080`
-  - peso: `0.12` kg (por unidade) — multiplica por `quantity` recebido
-  - altura: `12`, largura: `7`, comprimento: `4.5` cm
-  - Aceita `quantity` no body (1–99) para escalar peso.
-- Chama `POST https://www.melhorenvio.com.br/api/v2/me/shipment/calculate`:
-  - Headers: `Authorization: Bearer ${MELHOR_ENVIO_TOKEN}`, `Accept: application/json`, `Content-Type: application/json`, `User-Agent: Psotec (contato@psotec)`.
-  - Body: `{ from: { postal_code }, to: { postal_code }, products: [{ id: "1", width, height, length, weight, insurance_value: total, quantity }] }`.
-- Filtra retornos com `error` e mapeia para `{ id, name, company, days, price }` (usa Correios PAC/SEDEX se presentes, senão todas as opções de transportadora).
-- CORS + validação + tratamento de erro (retorna mensagem amigável se token inválido).
+### 3. Se ainda falhar após o push
 
-**Frontend (`Checkout.tsx`):**
-- Trocar `calcShipping(uf)` pelo `supabase.functions.invoke("calc-shipping", { body: { cep_destino, quantity } })` dentro do `useEffect` do CEP.
-- Mostrar loader enquanto calcula, error toast se falhar.
-- Recalcular quando `quantity` mudar (adicionar `quantity` às deps).
-- Manter regra de frete grátis para 3+ unidades (zera o preço da opção escolhida, mas usa o nome real da transportadora).
-- UI já existente das opções continua funcionando (id/name/days/price).
+Você cola aqui o trecho final do log do Actions (a aba "Details" do check vermelho → último passo com `Error:`) e eu corrijo cirurgicamente.
 
-### 4. Verificação
-- Build automático.
-- Testar edge function com `curl_edge_functions` usando CEP real.
-- Conferir banner no preview (1067px).
+## Arquivos a alterar
 
-### Detalhes técnicos
-- Token Melhor Envio criado em https://melhorenvio.com.br/painel/gerenciar/tokens (escopo: `shipping-calculate`).
-- Endpoint público de cálculo não exige OAuth completo, só Bearer token.
-- Se a API exigir scope adicional, retornaremos erro claro pedindo regeração do token.
+- `.github/workflows/deploy.yml` — trocar `npm ci` por `npm install`, remover bloco `env` de Secrets.
+- `vite.config.ts` — somente se o nome do repo for diferente de `Psotec`.
 
-### Pendente do usuário
-Após aprovação do plano, vou pedir o secret `MELHOR_ENVIO_TOKEN`.
+## O que NÃO vou mexer
+
+- `.env`, `src/integrations/supabase/client.ts`, `App.tsx`, `tsconfig.json` — já estão corretos.
