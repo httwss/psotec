@@ -1,0 +1,82 @@
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ShoppingBag, MessageCircle, Shield, Star, CreditCard } from "lucide-react";
+import heroImage from "@/assets/psotec-hero.png";
+import { whatsappLink } from "@/config/site";
+
+const PRODUCT_PRICE = 119.97;
+
+export const Hero = () => (
+  <section className="relative overflow-hidden gradient-hero">
+    <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+    <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-secondary/10 blur-3xl" />
+
+    <div className="container relative grid gap-12 px-4 py-16 md:py-24 lg:grid-cols-2 lg:items-center lg:gap-8">
+      <div className="animate-fade-in">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-accent-foreground">
+          <Shield className="h-4 w-4" />
+          Pomada dermatológica · uso adulto
+        </div>
+
+        <h1 className="text-4xl font-extrabold leading-[1.1] tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+          Alívio para a sua{" "}
+          <span className="text-gradient-health">psoríase</span>
+        </h1>
+
+        <p className="mt-6 max-w-xl text-lg text-muted-foreground md:text-xl">
+          O <strong className="text-foreground">Psotec</strong> ajuda a aliviar a coceira, reduzir a vermelhidão e suavizar a descamação, devolvendo o conforto da sua pele.
+        </p>
+
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <Button asChild variant="hero" size="xl" className="rounded-2xl">
+            <Link to="/checkout">
+              <ShoppingBag /> Comprar Agora
+            </Link>
+          </Button>
+          <Button asChild variant="whatsapp" size="xl" className="rounded-2xl animate-pulse-glow">
+            <a href={whatsappLink()} target="_blank" rel="noopener noreferrer">
+              <MessageCircle /> Falar no WhatsApp
+            </a>
+          </Button>
+        </div>
+
+        <div className="mt-6">
+          <p className="text-2xl font-extrabold text-foreground">
+            R$ {PRODUCT_PRICE.toFixed(2).replace(".", ",")}
+          </p>
+          <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+            <CreditCard className="h-4 w-4" />
+            Em até <strong className="text-foreground">12x no cartão</strong>
+          </p>
+          <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-secondary/15 px-3 py-1 text-xs font-bold text-secondary-foreground">
+            🔥 Leve 3 e pague <span className="text-secondary">12x de R$ 29,99 sem juros</span>
+          </p>
+        </div>
+
+        <div className="mt-8 flex items-center gap-6">
+          <div className="flex items-center gap-1">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="h-5 w-5 fill-secondary text-secondary" />
+            ))}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            <strong className="text-foreground">+12 mil</strong> clientes satisfeitos
+          </p>
+        </div>
+      </div>
+
+      <div className="relative flex justify-center animate-scale-in">
+        <div className="absolute inset-0 gradient-health rounded-[3rem] blur-3xl opacity-20" />
+        <div className="relative animate-float">
+          <img
+            src={heroImage}
+            alt="Pomada Psotec para tratamento de psoríase"
+            width={1280}
+            height={1280}
+            className="relative z-10 w-full max-w-md rounded-[2.5rem] shadow-glow"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+);

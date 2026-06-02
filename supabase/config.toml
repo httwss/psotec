@@ -1,0 +1,13 @@
+project_id = "anyuhgqjmydlauqaukrp"
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.mp-webhook]
+verify_jwt = false
+
+[functions.get-order]
+verify_jwt = false
+
+[functions.send-order-telegram]
+verify_jwt = false
